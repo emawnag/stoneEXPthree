@@ -13,14 +13,38 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.109.0/examples/js/loaders/MTLLoader.js"></script>
     <script type="module" src="./index.js"></script>
     <script>
+    var hotfix=0;
+    let statusCheckURL = '127.0.0.1:20597/status'
+
+      function parseHashParams() {
+  const hash = window.location.hash.substring(1)
+  if (!hash) return {}
+  
+  try {
+    // Check if it's base64 encoded
+    const decoded = atob(hash)
+    return JSON.parse(decoded)
+  } catch (e) {
+    // If not base64, try regular parsing
+    const params = {}
+    hash.split('&').forEach(param => {
+      const [key, value] = param.split('=')
+      if (key && value) {
+        params[key.trim()] = value.trim()
+      }
+    })
+    return params
+  }
+}
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof statusCheckURL !== "undefined") {
           fetch(`http://${statusCheckURL}`)
             .then(response => response.json())
             .then(data => {
               const { scale } = data;
-              const canvas_ = document.querySelectorAll("canvas")[3]; // Select the 4th canvas
+              const canvas_ = document.querySelectorAll("canvas")[hotfix]; // Select the 4th canvas
               if (canvas_) {
+                console.log("Canvas found:", canvas_);
                 canvas_.style.transform = `scale(${scale})`;
               }
 
@@ -29,7 +53,9 @@
                   .then(response => response.json())
                   .then(data => {
                     const { triggerMove, x1, y1, x2, y2, sec } = data;
+                    console.log("Data received:", triggerMove);
                     if (triggerMove && canvas_) {
+                      console.log("Moving canvas...");
                       clearInterval(interval);
                       const startX = x1;
                       const startY = y1;
