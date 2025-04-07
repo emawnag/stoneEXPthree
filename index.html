@@ -46,6 +46,7 @@
               if (canvas_) {
                 console.log("Canvas found:", canvas_);
                 canvas_.style.transform = `scale(${scale})`;
+                canvas_.style.display="inline";
               }
 
               const interval = setInterval(() => {

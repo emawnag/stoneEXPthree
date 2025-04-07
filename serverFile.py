@@ -20,10 +20,11 @@ x1, y1, x2, y2 = 0, 0, 0, 0
 triggerMove = False
 scale = 1.0  # New global variable for scale
 sec = 0.0  # New global variable for sec
+displayNone = False  # New global variable for displayNone
 
 # return the response dictionary
 def onHTTPRequest(webServerDAT, request, response):
-    global var_trigger, x1, y1, x2, y2, triggerMove, scale, sec
+    global var_trigger, x1, y1, x2, y2, triggerMove, scale, sec, displayNone
     
     # Set CORS headers
     response['Access-Control-Allow-Origin'] = '*'  # Allow all origins (change to specific domain if needed)
@@ -43,19 +44,19 @@ def onHTTPRequest(webServerDAT, request, response):
     # Route to set trigger to true
     if request['method'] == 'GET' and request['uri'] == '/trigger':
         var_trigger = True
-        response['data'] = '{"trigger": true, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": true, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
         
     elif request['method'] == 'GET' and request['uri'] == '/UNtrigger':
         var_trigger = False
-        response['data'] = '{"trigger": false, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": false, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
         
     # Route to get current trigger status
     elif request['method'] == 'GET' and request['uri'] == '/status':
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
     
@@ -70,14 +71,21 @@ def onHTTPRequest(webServerDAT, request, response):
         if 'y2' in request['pars']:
             y2 = int(request['pars']['y2'])
         
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
     
     # Route to toggle triggerMove
     elif request['method'] == 'GET' and request['uri'] == '/toggleTriggerMove':
         triggerMove = not triggerMove
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
+        response['content-type'] = 'application/json'
+        return response
+    
+    # Route to toggle displayNone
+    elif request['method'] == 'GET' and request['uri'] == '/toggleDisplayNone':
+        displayNone = not displayNone
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
     
@@ -86,7 +94,7 @@ def onHTTPRequest(webServerDAT, request, response):
         if 'scale' in request['pars']:
             scale = float(request['pars']['scale'])
         
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
     
@@ -95,7 +103,7 @@ def onHTTPRequest(webServerDAT, request, response):
         if 'sec' in request['pars']:
             sec = float(request['pars']['sec'])
         
-        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec)
+        response['data'] = '{"trigger": %s, "x1": %d, "y1": %d, "x2": %d, "y2": %d, "triggerMove": %s, "scale": %f, "sec": %f, "displayNone": %s}' % (str(var_trigger).lower(), x1, y1, x2, y2, str(triggerMove).lower(), scale, sec, str(displayNone).lower())
         response['content-type'] = 'application/json'
         return response
     
@@ -139,6 +147,12 @@ def onHTTPRequest(webServerDAT, request, response):
             </div>
             
             <div class="control-section">
+                <h2>DisplayNone Controls</h2>
+                <button onclick="toggleDisplayNone()">Toggle DisplayNone</button>
+                <span>Current state: <span id="displayNoneStatus">''' + str(displayNone).lower() + '''</span></span>
+            </div>
+            
+            <div class="control-section">
                 <h2>Scale Control</h2>
                 <div>
                     <label>Scale: <input type="number" id="scaleInput" value="''' + str(scale) + '''" step="0.1"></label>
@@ -162,6 +176,7 @@ def onHTTPRequest(webServerDAT, request, response):
                 <p>X2: <span id="x2Status">''' + str(x2) + '''</span></p>
                 <p>Y2: <span id="y2Status">''' + str(y2) + '''</span></p>
                 <p>Trigger Move: <span id="triggerMoveStatus2">''' + str(triggerMove).lower() + '''</span></p>
+                <p>Display None: <span id="displayNoneStatus2">''' + str(displayNone).lower() + '''</span></p>
                 <p>Scale: <span id="scaleStatus">''' + str(scale) + '''</span></p>
                 <p>Sec: <span id="secStatus">''' + str(sec) + '''</span></p>
             </div>
@@ -190,6 +205,12 @@ def onHTTPRequest(webServerDAT, request, response):
                         .then(data => updateStatusDisplay(data));
                 }
                 
+                function toggleDisplayNone() {
+                    fetch('/toggleDisplayNone')
+                        .then(response => response.json())
+                        .then(data => updateStatusDisplay(data));
+                }
+                
                 function updateScale() {
                     const scale = document.getElementById('scaleInput').value;
                     fetch(`/updateScale?scale=${scale}`)
@@ -212,6 +233,8 @@ def onHTTPRequest(webServerDAT, request, response):
                     document.getElementById('y2Status').innerText = data.y2;
                     document.getElementById('triggerMoveStatus').innerText = data.triggerMove;
                     document.getElementById('triggerMoveStatus2').innerText = data.triggerMove;
+                    document.getElementById('displayNoneStatus').innerText = data.displayNone;
+                    document.getElementById('displayNoneStatus2').innerText = data.displayNone;
                     document.getElementById('scaleStatus').innerText = data.scale;
                     document.getElementById('secStatus').innerText = data.sec;
                     
@@ -259,10 +282,11 @@ def onWebSocketReceivePong(webServerDAT, client, data):
     return
 
 def onServerStart(webServerDAT):
-    global var_trigger, scale, sec
+    global var_trigger, scale, sec, displayNone
     var_trigger = False  # Initialize trigger to False on server start
     scale = 1.0  # Initialize scale on server start
     sec = 0.0  # Initialize sec on server start
+    displayNone = False  # Initialize displayNone on server start
     return
 
 def onServerStop(webServerDAT):
