@@ -45,17 +45,15 @@ var hadBeenTriggered = false;
 function checkStatus() {
   if (hadBeenTriggered===false&& (urlParams.clean === 'true' || urlParams.clean === true)) {
   fetch(`http://${statusCheckURL}`)
-    .then(response => response.json()) // Parse response as JSON
-    .then(data => {
-      if (data.trigger && controls) {
-        hadBeenTriggered = true;
-        controls.explosionTrigger();
+    .then(response => response.text())
+    .then(text => {
+      if (text.trim() === 'True') {
+        // Trigger explosion
+        if (controls) {
+          hadBeenTriggered = true;
+          controls.explosionTrigger()
+        }
       }
-      //if (rock) {
-        // Apply scale and translation to the rock
-        //rock.scale.set(data.scale, data.scale, data.scale);
-        //rock.position.set(data.translateX, data.translateY, rock.position.z);
-      //}
     })
     .catch(error => console.error('Status check error:', error))
 }
@@ -127,7 +125,7 @@ let controls = new (function() {
     if (explosion) {
       explosion.destroy()
     }
-    explosion = new Explosion(this.rockX, this.rockY, this.rockZ)
+    explosion = new Explosion(0, 0)
     
     // Hide the rock when explosion is triggered
     if (rock) {
@@ -142,26 +140,11 @@ let controls = new (function() {
   this.lightX = -0.4
   this.lightY = -1.3
   this.lightZ = 10
-  
-  // Add rock position controls
-  this.rockX = 0
-  this.rockY = 0
-  this.rockZ = 0
-  
-  // Reset rock position to center
-  this.resetRockPosition = function() {
-    this.rockX = 0
-    this.rockY = 0
-    this.rockZ = 0
-    if (rock) {
-      rock.position.set(this.rockX, this.rockY, this.rockZ)
-    }
-  }
 })()
 
 // 建立粒子系統
 class Explosion {
-  constructor(x, y, z) {
+  constructor(x, y) {
     const geometry = new THREE.Geometry()
 
     this.material = new THREE.PointsMaterial({
@@ -179,7 +162,7 @@ class Explosion {
     this.dirs = []
 
     for (let i = 0; i < this.pCount; i++) {
-      const vertex = new THREE.Vector3(x, y, z) // 每個頂點起點都在爆炸起源點
+      const vertex = new THREE.Vector3(x, y, 0) // 每個頂點起點都在爆炸起源點
       geometry.vertices.push(vertex)
       const r = this.movementSpeed * THREE.Math.randFloat(0, 1) + 2
       // 噴射方向隨機 -> 不規則球體
@@ -304,26 +287,6 @@ function init() {
       directionalLight.position.z = value
     })
     lightFolder.open()
-    
-    // Add rock position controls
-    const rockFolder = gui.addFolder('Rock Position')
-    rockFolder.add(controls, 'rockX', -100, 100).onChange(value => {
-      if (rock) {
-        rock.position.x = value
-      }
-    })
-    rockFolder.add(controls, 'rockY', -100, 100).onChange(value => {
-      if (rock) {
-        rock.position.y = value
-      }
-    })
-    rockFolder.add(controls, 'rockZ', -100, 100).onChange(value => {
-      if (rock) {
-        rock.position.z = value
-      }
-    })
-    rockFolder.add(controls, 'resetRockPosition')
-    rockFolder.open()
   } else {
     // Hide stats element in clean mode
     const statsEl = document.getElementById('stats')
