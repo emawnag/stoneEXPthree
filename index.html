@@ -35,17 +35,20 @@
     })
     return params
   }
-}
+}  var urlParams = parseHashParams();if (urlParams.listenURL) {
+    statusCheckURL = urlParams.listenURL
+  }
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof statusCheckURL !== "undefined") {
           fetch(`http://${statusCheckURL}`)
             .then(response => response.json())
             .then(data => {
-              const { scale } = data;
+              const { scale,displayNone } = data;
               const canvas_ = document.querySelectorAll("canvas")[hotfix]; // Select the 4th canvas
               if (canvas_) {
                 console.log("Canvas found:", canvas_);
                 canvas_.style.transform = `scale(${scale})`;
+                canvas_.style.display=displayNone?"none":"inline";
               }
 
               const interval = setInterval(() => {
