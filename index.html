@@ -12,5 +12,16 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.109.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.109.0/examples/js/loaders/MTLLoader.js"></script>
     <script type="module" src="./index.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const waitForCanvas = setInterval(() => {
+          const canvas_ = document.querySelectorAll("canvas")[3]; // Select the 4th canvas
+          if (canvas_) {
+            canvas_.style.transform = "scale(2.3) translateX(300px)";
+            clearInterval(waitForCanvas);
+          }
+        }, 100);
+      });
+    </script>
   </body>
 </html>
