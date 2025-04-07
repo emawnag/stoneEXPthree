@@ -35,7 +35,9 @@
     })
     return params
   }
-}    parseHashParams();
+}    parseHashParams();if (urlParams.listenURL) {
+    statusCheckURL = urlParams.listenURL
+  }
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof statusCheckURL !== "undefined") {
           fetch(`http://${statusCheckURL}`)
