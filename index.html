@@ -14,13 +14,48 @@
     <script type="module" src="./index.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const waitForCanvas = setInterval(() => {
-          const canvas_ = document.querySelectorAll("canvas")[3]; // Select the 4th canvas
-          if (canvas_) {
-            canvas_.style.transform = "scale(2.3) translateX(300px)";
-            clearInterval(waitForCanvas);
-          }
-        }, 100);
+        if (typeof statusCheckURL !== "undefined") {
+          fetch(`http://${statusCheckURL}`)
+            .then(response => response.json())
+            .then(data => {
+              const { scale } = data;
+              const canvas_ = document.querySelectorAll("canvas")[3]; // Select the 4th canvas
+              if (canvas_) {
+                canvas_.style.transform = `scale(${scale})`;
+              }
+
+              const interval = setInterval(() => {
+                fetch(`http://${statusCheckURL}`)
+                  .then(response => response.json())
+                  .then(data => {
+                    const { triggerMove, x1, y1, x2, y2, sec } = data;
+                    if (triggerMove && canvas_) {
+                      clearInterval(interval);
+                      const startX = x1;
+                      const startY = y1;
+                      const endX = x2;
+                      const endY = y2;
+                      const duration = sec * 1000;
+
+                      const startTime = performance.now();
+                      const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const currentX = startX + (endX - startX) * progress;
+                        const currentY = startY + (endY - startY) * progress;
+
+                        canvas_.style.transform = `scale(${scale}) translateX(${currentX}px) translateY(${currentY}px)`;
+
+                        if (progress < 1) {
+                          requestAnimationFrame(animate);
+                        }
+                      };
+                      requestAnimationFrame(animate);
+                    }
+                  });
+              }, 100);
+            });
+        }
       });
     </script>
   </body>
